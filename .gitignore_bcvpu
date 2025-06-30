@@ -1,0 +1,32 @@
+# Node.js dependencies
+typescript-bcvpu/node_modules/
+typescript-bcvpu/dist/
+typescript-bcvpu/.npm/
+typescript-bcvpu/.yarn/
+
+# Build artifacts
+bcvpu/build/
+bcvpu/*.o
+bcvpu/*.so
+bcvpu/*.a
+bcvpu/.cmake/
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Environment files
+.env
+.env.local
