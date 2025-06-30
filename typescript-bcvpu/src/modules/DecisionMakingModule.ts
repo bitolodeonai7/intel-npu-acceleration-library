@@ -5,7 +5,7 @@
 
 import { BaseModule } from './BaseModule';
 import { ModuleType, Task } from '../interfaces/IModule';
-import { INPUAccelerator, Tensor, NPUOperationType } from '../interfaces/INPUAccelerator';
+import { INPUAccelerator } from '../interfaces/INPUAccelerator';
 
 /**
  * Decision context for AI inference
@@ -37,7 +37,7 @@ export class DecisionMakingModule extends BaseModule {
     private modelWeights: Float32Array;
     private learningRate: number = 0.01;
 
-    constructor(npuAccelerator?: INPUAccelerator) {
+    constructor(npuAccelerator?: INPUAccelerator | undefined) {
         super({
             name: 'Decision-Making Module',
             type: ModuleType.DECISION_MAKING,
@@ -257,7 +257,7 @@ export class DecisionMakingModule extends BaseModule {
     private async predictWithNPU(features: number[]): Promise<any> {
         try {
             // Create sequence tensor for time series prediction
-            const inputTensor = await this._npuAccelerator!.createTensor(
+            await this._npuAccelerator!.createTensor(
                 [1, features.length],
                 'float32',
                 features

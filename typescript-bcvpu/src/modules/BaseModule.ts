@@ -18,14 +18,14 @@ export abstract class BaseModule implements IModule {
 
     protected _status: ModuleStatus = ModuleStatus.IDLE;
     protected _npuAvailable: boolean = false;
-    protected _npuAccelerator?: INPUAccelerator;
+    protected _npuAccelerator?: INPUAccelerator | undefined;
     protected _tasksProcessed: number = 0;
     protected _errors: string[] = [];
     protected _startTime: Date = new Date();
     protected _lastActivity: Date = new Date();
     protected _config: ModuleConfig;
 
-    constructor(config: ModuleConfig, npuAccelerator?: INPUAccelerator) {
+    constructor(config: ModuleConfig, npuAccelerator?: INPUAccelerator | undefined) {
         this.id = uuidv4();
         this.name = config.name;
         this.type = config.type;
@@ -84,10 +84,12 @@ export abstract class BaseModule implements IModule {
             console.log(`[${this.name}] Task completed: ${task.taskName}`);
             return result;
         } catch (error) {
-            this._status = ModuleStatus.ERROR;
             const errorMsg = `Task processing failed: ${error}`;
             this._errors.push(errorMsg);
             console.error(`[${this.name}] ${errorMsg}`);
+            
+            // Reset status to allow subsequent operations
+            this._status = ModuleStatus.IDLE;
             throw error;
         }
     }

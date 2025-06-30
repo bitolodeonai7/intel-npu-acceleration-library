@@ -5,7 +5,7 @@
 
 import { BaseModule } from './BaseModule';
 import { ModuleType, Task } from '../interfaces/IModule';
-import { INPUAccelerator, Tensor, NPUOperationType } from '../interfaces/INPUAccelerator';
+import { INPUAccelerator, Tensor } from '../interfaces/INPUAccelerator';
 
 /**
  * Input processing configuration
@@ -36,7 +36,7 @@ export class SensoryProcessingModule extends BaseModule {
     private featureFilters: Float32Array[];
     private patternDatabase: Map<string, number[]>;
 
-    constructor(npuAccelerator?: INPUAccelerator) {
+    constructor(npuAccelerator?: INPUAccelerator | undefined) {
         super({
             name: 'Sensory Processing Module',
             type: ModuleType.SENSORY_PROCESSING,
@@ -211,7 +211,7 @@ export class SensoryProcessingModule extends BaseModule {
     private async processAudioWithNPU(audioData: number[]): Promise<PatternResult> {
         try {
             // Create audio tensor
-            const inputTensor = await this._npuAccelerator!.createTensor(
+            await this._npuAccelerator!.createTensor(
                 [1, 1, audioData.length],
                 'float32',
                 audioData
@@ -353,7 +353,7 @@ export class SensoryProcessingModule extends BaseModule {
 
     private extractFeaturesFromTensor(tensor: Tensor): number[] {
         // Extract features from NPU tensor output
-        const data = Array.from(tensor.data);
+        const data = Array.from(tensor.data) as number[];
         return data.slice(0, 10); // Take first 10 features
     }
 
@@ -539,12 +539,12 @@ export class SensoryProcessingModule extends BaseModule {
         return 1.0;
     }
 
-    private calculatePatternSimilarity(pattern: any): number {
+    private calculatePatternSimilarity(_pattern: any): number {
         // Simplified pattern similarity
         return 0.7 + Math.random() * 0.2;
     }
 
-    private findSimilarPatterns(pattern: any): string[] {
+    private findSimilarPatterns(_pattern: any): string[] {
         return Array.from(this.patternDatabase.keys()).slice(0, 3);
     }
 

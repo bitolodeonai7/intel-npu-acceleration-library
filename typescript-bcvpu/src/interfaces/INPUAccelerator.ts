@@ -29,7 +29,7 @@ export enum NPUStatus {
  * Tensor descriptor
  */
 export interface Tensor {
-    readonly data: Float32Array | Float16Array | Int32Array | Int8Array;
+    readonly data: Float32Array | Int32Array | Int8Array;
     readonly shape: readonly number[];
     readonly dtype: 'float32' | 'float16' | 'int32' | 'int8';
     readonly rank: number;
@@ -41,9 +41,9 @@ export interface Tensor {
 export interface NPUDeviceInfo {
     readonly available: boolean;
     readonly deviceName: string;
-    readonly driverVersion?: string;
-    readonly maxMemory?: number;
-    readonly computeUnits?: number;
+    readonly driverVersion?: string | undefined;
+    readonly maxMemory?: number | undefined;
+    readonly computeUnits?: number | undefined;
 }
 
 /**

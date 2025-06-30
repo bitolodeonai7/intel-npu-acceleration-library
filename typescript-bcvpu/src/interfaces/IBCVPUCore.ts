@@ -35,7 +35,7 @@ export interface BCVPUCoreConfig {
 export interface SystemMetrics {
     readonly cpuUsage: number;
     readonly memoryUsage: number;
-    readonly npuUsage?: number;
+    readonly npuUsage?: number | undefined;
     readonly taskThroughput: number;
     readonly uptime: number;
 }

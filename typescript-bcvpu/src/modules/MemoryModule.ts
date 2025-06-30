@@ -25,7 +25,7 @@ export class MemoryModule extends BaseModule {
     private memoryBank: MemoryBank;
     private maxMemorySize: number = 1024 * 1024 * 100; // 100MB default
 
-    constructor(npuAccelerator?: INPUAccelerator) {
+    constructor(npuAccelerator?: INPUAccelerator | undefined) {
         super({
             name: 'Memory Module',
             type: ModuleType.MEMORY,
@@ -117,7 +117,7 @@ export class MemoryModule extends BaseModule {
     private async retrieveData(task: Task): Promise<any> {
         const { inputData } = task;
         
-        if (!inputData || !inputData.key) {
+        if (!inputData?.key) {
             throw new Error('Retrieve operation requires key');
         }
 

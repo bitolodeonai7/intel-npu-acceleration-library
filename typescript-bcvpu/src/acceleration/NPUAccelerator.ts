@@ -28,10 +28,7 @@ export class NPUAccelerator implements INPUAccelerator {
         
         this._deviceInfo = {
             available: false,
-            deviceName: 'Unknown',
-            driverVersion: undefined,
-            maxMemory: undefined,
-            computeUnits: undefined
+            deviceName: 'Unknown'
         };
     }
 
@@ -82,10 +79,7 @@ export class NPUAccelerator implements INPUAccelerator {
             } else {
                 this._deviceInfo = {
                     available: false,
-                    deviceName: 'CPU Fallback',
-                    driverVersion: undefined,
-                    maxMemory: undefined,
-                    computeUnits: undefined
+                    deviceName: 'CPU Fallback'
                 };
                 console.log('[NPU Accelerator] NPU hardware not available, using CPU fallback');
                 return NPUStatus.NOT_AVAILABLE;
@@ -93,7 +87,10 @@ export class NPUAccelerator implements INPUAccelerator {
 
         } catch (error) {
             console.error(`[NPU Accelerator] Initialization failed: ${error}`);
-            this._deviceInfo.available = false;
+            this._deviceInfo = {
+                available: false,
+                deviceName: 'Error'
+            };
             return NPUStatus.INIT_FAILED;
         }
     }
@@ -108,15 +105,12 @@ export class NPUAccelerator implements INPUAccelerator {
         }
 
         const totalElements = shape.reduce((acc, dim) => acc * dim, 1);
-        let tensorData: Float32Array | Float16Array | Int32Array | Int8Array;
+        let tensorData: Float32Array | Int32Array | Int8Array;
 
         // Create typed array based on dtype
         switch (dtype) {
             case 'float32':
-                tensorData = new Float32Array(totalElements);
-                break;
-            case 'float16':
-                // Note: Float16Array is not natively supported in JS, using Float32Array
+            case 'float16': // Use Float32Array for float16 simulation
                 tensorData = new Float32Array(totalElements);
                 break;
             case 'int32':
@@ -298,7 +292,7 @@ export class NPUAccelerator implements INPUAccelerator {
                 await new Promise(resolve => setTimeout(resolve, 25));
             }
 
-            const result = await this.createTensor(inputA.shape, inputA.dtype);
+            const result = await this.createTensor([...inputA.shape], inputA.dtype);
             this.simulateElementwiseOperation(inputA, inputB, result, operation);
 
             const executionTime = Date.now() - startTime;
@@ -380,7 +374,10 @@ export class NPUAccelerator implements INPUAccelerator {
         
         // In real implementation, cleanup OpenVINO resources
         this._isInitialized = false;
-        this._deviceInfo.available = false;
+        this._deviceInfo = {
+            available: false,
+            deviceName: 'Unknown'
+        };
         
         console.log('[NPU Accelerator] NPU resources cleaned up');
     }
@@ -421,7 +418,7 @@ export class NPUAccelerator implements INPUAccelerator {
         const stride = params?.stride || [1, 1];
         const padding = params?.padding || [0, 0];
 
-        const [batchSize, inputChannels, inputHeight, inputWidth] = inputShape;
+        const [batchSize, , inputHeight, inputWidth] = inputShape;
         const [outputChannels, , kernelHeight, kernelWidth] = weightsShape;
 
         const outputHeight = Math.floor((inputHeight + 2 * padding[0] - kernelHeight) / stride[0] + 1);
@@ -430,7 +427,7 @@ export class NPUAccelerator implements INPUAccelerator {
         return [batchSize, outputChannels, outputHeight, outputWidth];
     }
 
-    private simulateConvolution(input: Tensor, weights: Tensor, result: Tensor, params?: Record<string, any>): void {
+    private simulateConvolution(_input: Tensor, _weights: Tensor, result: Tensor, _params?: Record<string, any>): void {
         // Simplified convolution simulation
         // In real implementation, this would be handled by OpenVINO
         const outputElements = result.data.length;
