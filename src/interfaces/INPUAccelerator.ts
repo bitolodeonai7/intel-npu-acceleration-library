@@ -75,7 +75,7 @@ export interface INPUAccelerator {
     /**
      * Set tensor data
      */
-    setTensorData(tensor: NPUTensor, data: ArrayBuffer | TypedArray): boolean;
+    setTensorData(tensor: NPUTensor, data: ArrayBuffer | Float32Array | Int32Array | Int8Array | Uint8Array): boolean;
 
     /**
      * Get tensor data

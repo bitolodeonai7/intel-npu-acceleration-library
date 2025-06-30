@@ -21,3 +21,12 @@ xml
 coverity
 .tox
 nc_workspace
+
+# BCVPU specific ignores
+node_modules/
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.tmp
+*.temp
